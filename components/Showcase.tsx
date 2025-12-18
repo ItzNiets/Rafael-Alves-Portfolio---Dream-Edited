@@ -144,34 +144,46 @@ const VideoPreview: React.FC<{ media?: string, video: string }> = ({ media, vide
 
 const ProjectModal: React.FC<{ project: Project, lang: Language, onClose: () => void }> = ({ project, lang, onClose }) => {
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 overflow-y-auto py-10">
+        <div className="fixed inset-0 z-[60] overflow-y-auto md:overflow-hidden md:flex md:items-center md:justify-center">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose} />
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-6xl bg-[#050505] border border-[#333] flex flex-col md:flex-row shadow-[0_0_50px_rgba(138,43,226,0.1)] overflow-hidden">
-                <button onClick={onClose} className="absolute top-4 right-4 z-50 text-white hover:text-[#8A2BE2] bg-black/50 p-2 rounded-full"><X size={24} /></button>
-                <div className="w-full md:w-2/3 bg-black flex items-center justify-center overflow-hidden min-h-[50vh]">
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="relative w-full min-h-full md:min-h-0 md:h-auto md:max-h-[90vh] md:max-w-6xl bg-[#050505] border-0 md:border border-[#333] flex flex-col md:flex-row shadow-[0_0_50px_rgba(138,43,226,0.1)] md:rounded-lg overflow-y-auto md:overflow-hidden"
+            >
+                <button
+                    onClick={onClose}
+                    className="fixed top-4 right-4 md:absolute md:top-4 md:right-4 z-[70] text-white hover:text-[#8A2BE2] bg-black/50 p-3 md:p-2 rounded-full backdrop-blur-md border border-white/10"
+                >
+                    <X size={24} />
+                </button>
+
+                <div className="w-full md:w-2/3 bg-black flex items-center justify-center overflow-hidden min-h-[40vh] md:min-h-[50vh] shrink-0 relative">
                     {project.type === 'video' ? (
                         isYouTubeUrl(project.videoUrl || '') ? (
                             <iframe src={getYouTubeEmbedUrl(project.videoUrl || '')} className="w-full h-full aspect-video" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
                         ) : (
-                            <video src={project.videoUrl} controls autoPlay className="w-full max-h-full object-contain" />
+                            <video src={project.videoUrl} controls autoPlay className="w-full max-h-[60vh] md:max-h-full object-contain" />
                         )
                     ) : project.type === 'comparison' ? (
-                        <div className="w-full h-full relative min-h-[60vh]"><CompareSlider before={project.beforeImage!} after={project.afterImage!} fit="contain" /></div>
+                        <div className="w-full h-[50vh] md:h-full relative"><CompareSlider before={project.beforeImage!} after={project.afterImage!} fit="contain" /></div>
                     ) : (
-                        <img src={project.mediaUrl} alt={project.title[lang]} className="w-full h-auto max-h-[85vh] object-contain" />
+                        <img src={project.mediaUrl} alt={project.title[lang]} className="w-full h-auto max-h-[60vh] md:max-h-[85vh] object-contain" />
                     )}
                 </div>
-                <div className="w-full md:w-1/3 p-8 md:p-12 overflow-y-auto border-l border-[#333] bg-[#0A0A0A] flex flex-col justify-center">
-                    <div className="mb-8">
+
+                <div className="w-full md:w-1/3 p-6 md:p-12 bg-[#0A0A0A] border-t md:border-t-0 md:border-l border-[#333] flex flex-col">
+                    <div className="mb-8 mt-8 md:mt-0">
                         <span className="text-[#8A2BE2] font-mono text-xs border border-[#8A2BE2] px-2 py-1">{project.category[lang]}</span>
-                        <h2 className="text-4xl font-bold text-white mt-4 mb-2 font-oswald">{project.title[lang]}</h2>
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mt-4 mb-2 font-oswald leading-tight">{project.title[lang]}</h2>
                         <span className="font-mono text-gray-500">{project.year}</span>
                     </div>
-                    <div className="space-y-6">
-                        <div><h4 className="font-mono text-xs text-gray-500 mb-2">// {UI_STRINGS[lang].overview}</h4><p className="text-gray-300 font-light">{project.description[lang]}</p></div>
-                        <div><h4 className="font-mono text-xs text-gray-500 mb-2">// {UI_STRINGS[lang].technicalDetails}</h4><p className="text-gray-300 font-light">{project.details[lang]}</p></div>
+                    <div className="space-y-6 flex-grow">
+                        <div><h4 className="font-mono text-xs text-gray-500 mb-2">// {UI_STRINGS[lang].overview}</h4><p className="text-gray-300 font-light text-sm md:text-base">{project.description[lang]}</p></div>
+                        <div><h4 className="font-mono text-xs text-gray-500 mb-2">// {UI_STRINGS[lang].technicalDetails}</h4><p className="text-gray-300 font-light text-sm md:text-base">{project.details[lang]}</p></div>
                     </div>
-                    <div className="mt-12 pt-8 border-t border-[#222] font-mono text-xs text-gray-600">
+                    <div className="mt-12 pt-8 border-t border-[#222] font-mono text-xs text-gray-600 pb-8 md:pb-0">
                         <p>FILE_ID: {project.id}_XYZ_00{project.id}</p>
                         <p>{UI_STRINGS[lang].status}</p>
                     </div>
